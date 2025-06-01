@@ -1,3 +1,7 @@
+
+def is_null_or_whitespace(s):
+    return s.strip() == ''
+
 import streamlit as st
 from resume_processor import extract_text
 from matcher import get_match_score, analyze_keywords
