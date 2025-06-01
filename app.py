@@ -1,1 +1,51 @@
-{"nbformat":4,"nbformat_minor":0,"metadata":{"colab":{"provenance":[],"authorship_tag":"ABX9TyPXyWtb2x0nth5/PbDrUpkZ"},"kernelspec":{"name":"python3","display_name":"Python 3"},"language_info":{"name":"python"}},"cells":[{"cell_type":"code","execution_count":1,"metadata":{"colab":{"base_uri":"https://localhost:8080/"},"id":"phmNvoatqx9t","executionInfo":{"status":"ok","timestamp":1748767629244,"user_tz":-330,"elapsed":28,"user":{"displayName":"Venu Gopal Rao Joshi","userId":"07793082721357199512"}},"outputId":"c7a0b135-01a7-468f-cb27-05bc083b2562"},"outputs":[{"output_type":"stream","name":"stdout","text":["Writing app.py\n"]}],"source":["%%writefile app.py\n","import streamlit as st\n","from resume_processor import extract_text\n","from matcher import get_match_score, analyze_keywords\n","import os\n","\n","st.set_page_config(page_title=\"ATS Score Matcher\", layout=\"centered\")\n","st.title(\"📄 ATS Match Score Calculator\")\n","st.write(\"Upload your resume and job description to get a match score out of 10.\")\n","\n","resume_file = st.file_uploader(\"📤 Upload Resume (PDF/DOCX/TXT)\", type=[\"pdf\", \"docx\", \"txt\"])\n","jd_file = st.file_uploader(\"💼 Upload Job Description (PDF/TXT)\", type=[\"pdf\", \"txt\"])\n","\n","if resume_file and jd_file:\n","    _, resume_ext = os.path.splitext(resume_file.name)\n","    _, jd_ext = os.path.splitext(jd_file.name)\n","    resume_ext = resume_ext[1:].lower()\n","    jd_ext = jd_ext[1:].lower()\n","\n","    with st.spinner(\"Processing...\"):\n","        try:\n","            resume_text = extract_text(resume_file, resume_ext)\n","            jd_text = extract_text(jd_file, jd_ext)\n","            score = get_match_score(resume_text, jd_text)\n","            st.success(f\"✅ Match Score: **{score}/10**\")\n","\n","            keyword_analysis = analyze_keywords(resume_text, jd_text)\n","            missing_keywords = keyword_analysis[\"missing_keywords\"]\n","            matched_keywords = keyword_analysis[\"matched_keywords\"]\n","\n","            if missing_keywords:\n","                st.warning(f\"💡 Missing Keywords: {', '.join(missing_keywords)}\")\n","                st.write(\"Add these keywords to your resume to improve the match score.\")\n","            else:\n","                st.success(\"🎉 All JD keywords are present in your resume!\")\n","\n","            if matched_keywords:\n","                st.info(f\"✅ Matched Keywords: {', '.join(matched_keywords)}\")\n","\n","            st.subheader(\"💡 Suggestions to Improve Your Resume:\")\n","            st.markdown(\n","                \"\"\"\n","                - **Tailor Your Resume:** Include missing keywords in relevant sections.\n","                - **Reorder Sections:** Prioritize sections that align with the JD.\n","                - **Quantify Achievements:** Use numbers and metrics to showcase impact.\n","                - **Use Action Verbs:** Start bullet points with strong action verbs.\n","                \"\"\"\n","            )\n","\n","        except Exception as e:\n","            st.error(\"An error occurred while processing the files.\")\n","            st.exception(e)"]},{"cell_type":"code","source":[],"metadata":{"id":"9lEHWBlxrD8-"},"execution_count":null,"outputs":[]}]}
+import streamlit as st
+from resume_processor import extract_text
+from matcher import get_match_score, analyze_keywords
+import os
+
+st.set_page_config(page_title="ATS Score Matcher", layout="centered")
+st.title("📄 ATS Match Score Calculator")
+st.write("Upload your resume and job description to get a match score out of 10.")
+
+resume_file = st.file_uploader("📤 Upload Resume (PDF/DOCX/TXT)", type=["pdf", "docx", "txt"])
+jd_file = st.file_uploader("💼 Upload Job Description (PDF/TXT)", type=["pdf", "txt"])
+
+if resume_file and jd_file:
+    _, resume_ext = os.path.splitext(resume_file.name)
+    _, jd_ext = os.path.splitext(jd_file.name)
+    resume_ext = resume_ext[1:].lower()
+    jd_ext = jd_ext[1:].lower()
+
+    with st.spinner("Processing..."):
+        try:
+            resume_text = extract_text(resume_file, resume_ext)
+            jd_text = extract_text(jd_file, jd_ext)
+            score = get_match_score(resume_text, jd_text)
+            st.success(f"✅ Match Score: **{score}/10**")
+
+            keyword_analysis = analyze_keywords(resume_text, jd_text)
+            missing_keywords = keyword_analysis["missing_keywords"]
+            matched_keywords = keyword_analysis["matched_keywords"]
+
+            if missing_keywords:
+                st.warning(f"💡 Missing Keywords: {', '.join(missing_keywords)}")
+                st.write("Add these keywords to your resume to improve the match score.")
+            else:
+                st.success("🎉 All JD keywords are present in your resume!")
+
+            if matched_keywords:
+                st.info(f"✅ Matched Keywords: {', '.join(matched_keywords)}")
+
+            st.subheader("💡 Suggestions to Improve Your Resume:")
+            st.markdown(
+                """
+                - **Tailor Your Resume:** Include missing keywords in relevant sections.
+                - **Reorder Sections:** Prioritize sections that align with the JD.
+                - **Quantify Achievements:** Use numbers and metrics to showcase impact.
+                - **Use Action Verbs:** Start bullet points with strong action verbs.
+                """
+            )
+
+        except Exception as e:
+            st.error("An error occurred while processing the files.")
+            st.exception(e)
