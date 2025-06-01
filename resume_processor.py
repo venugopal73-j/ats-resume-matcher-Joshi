@@ -1,1 +1,25 @@
-{"nbformat":4,"nbformat_minor":0,"metadata":{"colab":{"provenance":[],"authorship_tag":"ABX9TyM5fnpSAIliGJd3zWr9Qa2d"},"kernelspec":{"name":"python3","display_name":"Python 3"},"language_info":{"name":"python"}},"cells":[{"cell_type":"code","execution_count":1,"metadata":{"colab":{"base_uri":"https://localhost:8080/"},"id":"4gXiLr4WqFj4","executionInfo":{"status":"ok","timestamp":1748767420096,"user_tz":-330,"elapsed":24,"user":{"displayName":"Venu Gopal Rao Joshi","userId":"07793082721357199512"}},"outputId":"6b79b66e-69fa-4c8f-9507-b00f2a95abe4"},"outputs":[{"output_type":"stream","name":"stdout","text":["Writing resume_processor.py\n"]}],"source":["%%writefile resume_processor.py\n","import PyPDF2\n","from docx import Document\n","\n","def extract_text_from_pdf(file):\n","    pdf_reader = PyPDF2.PdfReader(file)\n","    text = ''\n","    for page in pdf_reader.pages:\n","        text += page.extract_text()\n","    return text\n","\n","def extract_text_from_docx(file):\n","    doc = Document(file)\n","    full_text = []\n","    for para in doc.paragraphs:\n","        full_text.append(para.text)\n","    return '\\n'.join(full_text)\n","\n","def extract_text(file, file_type):\n","    if file_type == \"pdf\":\n","        return extract_text_from_pdf(file)\n","    elif file_type == \"docx\":\n","        return extract_text_from_docx(file)\n","    else:\n","        return file.getvalue().decode(\"utf-8\")"]},{"cell_type":"code","source":[],"metadata":{"id":"_75IavEnqOy9"},"execution_count":null,"outputs":[]}]}
+%%writefile resume_processor.py
+import PyPDF2
+from docx import Document
+
+def extract_text_from_pdf(file):
+    pdf_reader = PyPDF2.PdfReader(file)
+    text = ''
+    for page in pdf_reader.pages:
+        text += page.extract_text()
+    return text
+
+def extract_text_from_docx(file):
+    doc = Document(file)
+    full_text = []
+    for para in doc.paragraphs:
+        full_text.append(para.text)
+    return '\n'.join(full_text)
+
+def extract_text(file, file_type):
+    if file_type == "pdf":
+        return extract_text_from_pdf(file)
+    elif file_type == "docx":
+        return extract_text_from_docx(file)
+    else:
+        return file.getvalue().decode("utf-8")

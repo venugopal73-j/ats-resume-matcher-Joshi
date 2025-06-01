@@ -1,1 +1,17 @@
-{"nbformat":4,"nbformat_minor":0,"metadata":{"colab":{"provenance":[],"authorship_tag":"ABX9TyP4Jp0ke3BxF7dJsowGv0EE"},"kernelspec":{"name":"python3","display_name":"Python 3"},"language_info":{"name":"python"}},"cells":[{"cell_type":"code","execution_count":1,"metadata":{"colab":{"base_uri":"https://localhost:8080/"},"id":"BL7WbUIcqiJf","executionInfo":{"status":"ok","timestamp":1748767510898,"user_tz":-330,"elapsed":23,"user":{"displayName":"Venu Gopal Rao Joshi","userId":"07793082721357199512"}},"outputId":"56eecded-b8a6-48a6-8b1f-c4f276774614"},"outputs":[{"output_type":"stream","name":"stdout","text":["Writing matcher.py\n"]}],"source":["%%writefile matcher.py\n","from sklearn.feature_extraction.text import TfidfVectorizer\n","from sklearn.metrics.pairwise import cosine_similarity\n","import re\n","\n","def get_match_score(resume_text, job_desc_text):\n","    vectorizer = TfidfVectorizer()\n","    tfidf_matrix = vectorizer.fit_transform([resume_text, job_desc_text])\n","    score = cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]\n","    return round(score * 10, 2)\n","\n","def analyze_keywords(resume_text, job_desc_text):\n","    jd_keywords = set(re.findall(r'\\b\\w+\\b', job_desc_text.lower()))\n","    resume_keywords = set(re.findall(r'\\b\\w+\\b', resume_text.lower()))\n","    missing_keywords = jd_keywords - resume_keywords\n","    matched_keywords = jd_keywords & resume_keywords\n","    return {\"missing_keywords\": list(missing_keywords), \"matched_keywords\": list(matched_keywords)}"]}]}
+%%writefile matcher.py
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import re
+
+def get_match_score(resume_text, job_desc_text):
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform([resume_text, job_desc_text])
+    score = cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
+    return round(score * 10, 2)
+
+def analyze_keywords(resume_text, job_desc_text):
+    jd_keywords = set(re.findall(r'\b\w+\b', job_desc_text.lower()))
+    resume_keywords = set(re.findall(r'\b\w+\b', resume_text.lower()))
+    missing_keywords = jd_keywords - resume_keywords
+    matched_keywords = jd_keywords & resume_keywords
+    return {"missing_keywords": list(missing_keywords), "matched_keywords": list(matched_keywords)}
