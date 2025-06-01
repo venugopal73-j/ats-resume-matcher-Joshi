@@ -1,4 +1,3 @@
-%%writefile resume_processor.py
 import PyPDF2
 from docx import Document
 
