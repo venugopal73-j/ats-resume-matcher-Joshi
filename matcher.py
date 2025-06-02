@@ -9,6 +9,8 @@ from nltk.corpus import stopwords
 try:
     nltk.data.find('tokenizers/punkt')
     nltk.data.find('corpora/stopwords')
+    nltk.download('punkt_tab', download_dir='/usr/local/share/nltk_data')
+    nltk.download(download_dir='/usr/local/share/nltk_data')
 except LookupError:
     nltk.download('punkt')
     nltk.download('stopwords')
