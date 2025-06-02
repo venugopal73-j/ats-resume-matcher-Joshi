@@ -2,15 +2,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import re
 import nltk
-from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
 # Download NLTK data if not already present
 try:
     nltk.data.find('tokenizers/punkt')
     nltk.data.find('corpora/stopwords')
-    nltk.download('punkt_tab', download_dir='/usr/local/share/nltk_data')
-    nltk.download(download_dir='/usr/local/share/nltk_data')
 except LookupError:
     nltk.download('punkt')
     nltk.download('stopwords')
@@ -27,10 +24,7 @@ def clean_text(text):
 
     # Remove stopwords and short words
     stop_words = set(stopwords.words('english'))
-    filtered_tokens = [
-        word for word in tokens
-        if word not in stop_words and len(word) > 2
-    ]
+    filtered_tokens = [word for word in tokens if word not in stop_words and len(word) > 2]
 
     return ' '.join(filtered_tokens)
 
@@ -47,7 +41,6 @@ def analyze_keywords(resume_text, job_desc_text):
     cleaned_resume = clean_text(resume_text)
     cleaned_jd = clean_text(job_desc_text)
 
-    # Get unique important keywords from cleaned JD and resume
     jd_keywords = set(cleaned_jd.split())
     resume_keywords = set(cleaned_resume.split())
 
